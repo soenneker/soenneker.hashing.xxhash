@@ -17,7 +17,7 @@ public static class XxHash3Util
     /// <summary>
     /// Maximum UTF-8 byte count that will be stackallocated before falling back to pooling.
     /// </summary>
-    private const int StackallocByteThreshold = 256;
+    private const int _stackallocByteThreshold = 256;
 
     private static readonly Encoding _utf8 = Encoding.UTF8;
 
@@ -148,7 +148,7 @@ public static class XxHash3Util
     {
         int byteCount = _utf8.GetByteCount(value);
 
-        if (byteCount <= StackallocByteThreshold)
+        if (byteCount <= _stackallocByteThreshold)
         {
             Span<byte> buffer = stackalloc byte[byteCount];
             _utf8.GetBytes(value, buffer);
