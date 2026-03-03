@@ -19,7 +19,7 @@ public sealed class XxHash3UtilTests
         const string value = "hello world";
 
         ulong expected = XxHash3.HashToUInt64(Encoding.UTF8.GetBytes(value));
-        string expectedHex = expected.ToString("x16");
+        var expectedHex = expected.ToString("x16");
 
         string actual = XxHash3Util.Hash(value);
 

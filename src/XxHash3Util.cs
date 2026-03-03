@@ -56,9 +56,9 @@ public static class XxHash3Util
         // Always produces 16 lowercase hex chars (big-endian nibble order)
         return string.Create(16, hash, static (span, h) =>
         {
-            for (int i = 15; i >= 0; i--)
+            for (var i = 15; i >= 0; i--)
             {
-                int nibble = (int)(h & 0xFu);
+                var nibble = (int)(h & 0xFu);
                 span[i] = (char)(nibble < 10 ? ('0' + nibble) : ('a' + (nibble - 10)));
                 h >>= 4;
             }
@@ -116,6 +116,17 @@ public static class XxHash3Util
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong HashToUInt64(ReadOnlySpan<byte> data)
         => XxHash3.HashToUInt64(data);
+
+    /// <summary>
+    /// Computes a 64-bit XXH3 hash for the provided byte span.
+    /// </summary>
+    /// <param name="data">The bytes to hash.</param>
+    /// <param name="seed"></param>
+    /// <returns>The computed 64-bit hash.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ulong HashToUInt64(ReadOnlySpan<byte> data, long seed)
+        => XxHash3.HashToUInt64(data, seed);
 
     // ------------------------------------------------------------------
     // Adapters: text → UTF-8 → bytes
