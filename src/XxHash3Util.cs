@@ -59,10 +59,68 @@ public static class XxHash3Util
             for (var i = 15; i >= 0; i--)
             {
                 var nibble = (int)(h & 0xFu);
-                span[i] = (char)(nibble < 10 ? ('0' + nibble) : ('a' + (nibble - 10)));
+                span[i] = (char)(nibble < 10 ? '0' + nibble : 'a' + (nibble - 10));
                 h >>= 4;
             }
         });
+    }
+
+    /// <summary>
+    /// Computes a 64-bit hash value for the specified UTF-8 encoded byte sequence.
+    /// </summary>
+    /// <remarks>The hash result is deterministic for the same input and seed. Providing a nonzero seed allows
+    /// for generating different hash values for the same input, which can be useful for scenarios such as randomized
+    /// hashing or hash partitioning.</remarks>
+    /// <param name="utf8">A read-only span of bytes containing the UTF-8 encoded data to hash.</param>
+    /// <param name="seed">An optional seed value to influence the hash computation. Use 0 for the default hash behavior.</param>
+    /// <returns>A 64-bit unsigned integer representing the hash of the input data.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ulong HashUtf8ToUInt64(ReadOnlySpan<byte> utf8, long seed = 0)
+    {
+        return seed == 0
+            ? HashToUInt64(utf8)
+            : HashToUInt64(utf8, seed);
+    }
+
+    /// <summary>
+    /// Computes a 64-bit hash value for the specified sequence of characters, optionally using a custom seed.
+    /// </summary>
+    /// <remarks>This method encodes the input characters as UTF-8 before computing the hash. Using the same
+    /// seed and input will always produce the same hash value. The method is suitable for generating hash codes for
+    /// text data where consistent results are required across executions.</remarks>
+    /// <param name="chars">The sequence of characters to hash. The characters are interpreted as UTF-8 encoded text.</param>
+    /// <param name="seed">An optional seed value to influence the hash computation. If not specified, a default seed is used.</param>
+    /// <returns>A 64-bit unsigned integer representing the hash of the input characters.</returns>
+    public static ulong HashCharsToUInt64(ReadOnlySpan<char> chars, long seed = 0)
+    {
+        if (chars.IsEmpty)
+            return seed == 0 ? HashToUInt64(ReadOnlySpan<byte>.Empty) : HashToUInt64(ReadOnlySpan<byte>.Empty, seed);
+
+        int byteCount = _utf8.GetByteCount(chars);
+
+        if (byteCount <= _stackallocByteThreshold)
+        {
+            Span<byte> tmp = stackalloc byte[_stackallocByteThreshold];
+            int written = _utf8.GetBytes(chars, tmp);
+
+            ReadOnlySpan<byte> payload = tmp[..written];
+
+            return seed == 0 ? HashToUInt64(payload) : HashToUInt64(payload, seed);
+        }
+
+        byte[] rented = ArrayPool<byte>.Shared.Rent(byteCount);
+
+        try
+        {
+            int written = _utf8.GetBytes(chars, rented);
+            var payload = new ReadOnlySpan<byte>(rented, 0, written);
+
+            return seed == 0 ? HashToUInt64(payload) : HashToUInt64(payload, seed);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(rented);
+        }
     }
 
     /// <summary>
@@ -114,8 +172,7 @@ public static class XxHash3Util
     /// <returns>The computed 64-bit hash.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong HashToUInt64(ReadOnlySpan<byte> data)
-        => XxHash3.HashToUInt64(data);
+    public static ulong HashToUInt64(ReadOnlySpan<byte> data) => XxHash3.HashToUInt64(data);
 
     /// <summary>
     /// Computes a 64-bit XXH3 hash for the provided byte span.
@@ -125,8 +182,7 @@ public static class XxHash3Util
     /// <returns>The computed 64-bit hash.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong HashToUInt64(ReadOnlySpan<byte> data, long seed)
-        => XxHash3.HashToUInt64(data, seed);
+    public static ulong HashToUInt64(ReadOnlySpan<byte> data, long seed) => XxHash3.HashToUInt64(data, seed);
 
     // ------------------------------------------------------------------
     // Adapters: text → UTF-8 → bytes
