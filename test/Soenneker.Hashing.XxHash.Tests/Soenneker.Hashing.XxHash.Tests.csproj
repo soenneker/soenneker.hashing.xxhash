@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Soenneker.Hashing.XxHash.csproj" />
+        <ProjectReference Include="..\..\src\Soenneker.Hashing.XxHash\Soenneker.Hashing.XxHash.csproj" />
     </ItemGroup>
 
     <ItemGroup>

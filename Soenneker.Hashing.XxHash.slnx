@@ -4,10 +4,11 @@
   </Folder>
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/build-and-test.yml" />
+    <File Path=".github/workflows/codeql.yml" />
     <File Path=".github/workflows/publish-package.yml" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/Soenneker.Hashing.XxHash.csproj" />
+    <Project Path="src/Soenneker.Hashing.XxHash/Soenneker.Hashing.XxHash.csproj" />
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/Soenneker.Hashing.XxHash.Tests/Soenneker.Hashing.XxHash.Tests.csproj" />
