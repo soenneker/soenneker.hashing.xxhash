@@ -48,6 +48,6 @@
     <ItemGroup>
         
         <PackageReference Include="Soenneker.Extensions.Spans.Readonly.Chars" Version="4.0.67" />
-        <PackageReference Include="System.IO.Hashing" Version="10.0.5" />
+        <PackageReference Include="System.IO.Hashing" Version="10.0.6" />
     </ItemGroup>
 </Project>
