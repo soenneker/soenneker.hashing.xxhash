@@ -2,18 +2,17 @@ using System;
 using System.IO.Hashing;
 using System.Text;
 using AwesomeAssertions;
-using Xunit;
 
 namespace Soenneker.Hashing.XxHash.Tests;
 
 public sealed class XxHash3UtilTests
 {
-    public XxHash3UtilTests(ITestOutputHelper output)
+    public XxHash3UtilTests( output)
     {
 
     }
 
-    [Fact]
+    [Test]
     public void Hash_matches_system_xxhash3()
     {
         const string value = "hello world";
@@ -26,7 +25,7 @@ public sealed class XxHash3UtilTests
         actual.Should().Be(expectedHex);
     }
 
-    [Fact]
+    [Test]
     public void Verify_returns_true_for_matching_hash()
     {
         const string value = "verify me";
@@ -37,7 +36,7 @@ public sealed class XxHash3UtilTests
         result.Should().BeTrue();
     }
 
-    [Fact]
+    [Test]
     public void Verify_returns_false_for_mismatch()
     {
         const string value = "verify me";
@@ -49,14 +48,14 @@ public sealed class XxHash3UtilTests
         result.Should().BeFalse();
     }
 
-    [Fact]
+    [Test]
     public void Hash_throws_on_null()
     {
         Action action = () => XxHash3Util.Hash(null!);
         action.Should().Throw<ArgumentNullException>();
     }
 
-    [Fact]
+    [Test]
     public void Verify_throws_on_null_inputs()
     {
         Action nullValue = () => XxHash3Util.Verify(null!, "abc");
