@@ -7,9 +7,8 @@ namespace Soenneker.Hashing.XxHash.Tests;
 
 public sealed class XxHash3UtilTests
 {
-    public XxHash3UtilTests( output)
+    public XxHash3UtilTests()
     {
-
     }
 
     [Test]
