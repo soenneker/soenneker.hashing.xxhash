@@ -48,6 +48,14 @@ public sealed class XxHash3UtilTests
     }
 
     [Test]
+    public void Verify_rejects_noncanonical_hex_length()
+    {
+        bool result = XxHash3Util.Verify("value", "0");
+
+        result.Should().BeFalse();
+    }
+
+    [Test]
     public void Hash_throws_on_null()
     {
         Action action = () => XxHash3Util.Hash(null!);

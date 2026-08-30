@@ -155,7 +155,7 @@ public static class XxHash3Util
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Verify(ReadOnlySpan<char> value, ReadOnlySpan<char> expectedHash)
     {
-        if (!expectedHash.TryParseHexUInt64(out ulong expected))
+        if (expectedHash.Length != 16 || !expectedHash.TryParseHexUInt64(out ulong expected))
             return false;
 
         return HashToUInt64(value) == expected;
@@ -178,7 +178,7 @@ public static class XxHash3Util
     /// Computes a 64-bit XXH3 hash for the provided byte span.
     /// </summary>
     /// <param name="data">The bytes to hash.</param>
-    /// <param name="seed"></param>
+    /// <param name="seed">The seed used to produce an alternate deterministic hash.</param>
     /// <returns>The computed 64-bit hash.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
